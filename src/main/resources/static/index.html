@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 <body>
   <input id="search-input"/>
-  <button value="button"></button>
+  <button value="button" class="btn">👀👀👀</button>
 </body>
+<script>
+    $(document).ready(function() {
+        const url = 'http://localhost:8085/coupang/search?param=';
+        $('.btn').click(function() {
+            $.ajax({
+                url: url+$('#search-input').val(),
+                type: "GET",
+                success: function(result) {
+                    console.log(result);
+                },
+                error:function(error) {
+                    console.log(error);
+			}
+		})
+	})
+})
+</script>
 </html>

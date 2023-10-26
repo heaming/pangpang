@@ -4,9 +4,9 @@ server:
 provider:
   coupang:
     client-id:
-    vender-id: A01016365
-    client_secret: 'e437851c7916fe9e853d8cfa25b01da09f8a7d71'
-    access_key: 'd662429d-5397-4940-8b29-48d63355a178'
+    vendor_id: A01016365
+    secret_key: e437851c7916fe9e853d8cfa25b01da09f8a7d71
+    access_key: d662429d-5397-4940-8b29-48d63355a178
     baseUrl:
 
 spring:
