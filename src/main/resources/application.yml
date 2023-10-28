@@ -16,3 +16,9 @@ spring:
       content-type: text/html
     suffix: .html
     prefix: classpath:/static
+
+webdriver:
+  chrome:
+    driver_id: webdriver.chrome.driver
+    driver_path: src/main/resources/lib/chromedriver-win32/chromedriver-win32/chromedriver.exe
+#    driver_path: C:/chromedriver-win32/chromedriver-win32/chromedriver.exe
