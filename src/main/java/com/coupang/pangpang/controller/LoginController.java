@@ -17,15 +17,16 @@ public class LoginController {
     private final CoupangLoginService service;
 
     @GetMapping("/search")
-    public void login(@RequestParam(name = "param", required = false) String param) {
+    public void search(@RequestParam(name = "param", required = false) String param) {
         log.info(param);
         service.login(param);
     }
 
-    @PostMapping("/next")
-    public @ResponseBody List<ProductVo> next(@RequestBody List<ProductVo> vo) {
+    @PostMapping("/excel")
+    public @ResponseBody List<ProductVo> excel(@RequestBody List<ProductVo> vo) {
         log.info(vo.get(0).toString());
         return vo;
     }
+
 
 }

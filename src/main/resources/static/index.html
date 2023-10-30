@@ -12,6 +12,8 @@
 <script>
     $(document).ready(function() {
         const url = 'http://localhost:8090/coupang/search?param=';
+
+        // onClick
         $('.btn').click(function() {
             $.ajax({
                 url: url+$('#search-input').val(),
@@ -21,9 +23,26 @@
                 },
                 error:function(error) {
                     console.log(error);
-			}
-		})
-	})
-})
+			    }
+		    })
+	    })
+
+        // keyup
+        $('#search-input').on('keyup', function (key) {
+            if(key.keyCode == 13) {
+                $.ajax({
+                    url: url+$('#search-input').val(),
+                    type: "GET",
+                    success: function(result) {
+                        console.log("res :: \n"+result);
+                    },
+                    error:function(error) {
+                        console.log("e :: \n"+error);
+                    }
+                })
+            }
+
+        })
+    })
 </script>
 </html>

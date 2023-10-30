@@ -1,27 +1,28 @@
-package com.coupang.pangpang.selenium.driver;
+package com.coupang.pangpang.selenium.config;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-@Setter
-public class CustChromeDriver {
-    private static final String WEB_DRIVER_ID = "webdriver.chrome.driver";
-    private static final String WEB_DRIVER_PATH = "C:/chromedriver-win32/chromedriver-win32/chromedriver.exe";
+public class ChromeDriverConfig {
+    private String WEB_DRIVER_ID; // = "webdriver.chrome.driver";
+    private String WEB_DRIVER_PATH; // = "C:/chromedriver-win32/chromedriver-win32/chromedriver.exe";
 
     private ChromeDriver driver;
     private JavascriptExecutor js;
 
-    public CustChromeDriver() {
+    public ChromeDriverConfig(@Value("${webdriver.chrome.driver_id}") String webDriverId,
+                              @Value("${webdriver.chrome.driver_path}") String webDriverPath) {
+        this.WEB_DRIVER_ID = webDriverId;
+        this.WEB_DRIVER_PATH = webDriverPath;
+
         System.setProperty (WEB_DRIVER_ID, WEB_DRIVER_PATH);
 
         ChromeOptions options = new ChromeOptions();
@@ -34,7 +35,8 @@ public class CustChromeDriver {
         options.addArguments("--disable-gpu");            //gpu 비활성화
 //        options.addArguments("--blink-settings=imagesEnabled=false"); //이미지 다운 안받음
 //        options.addArguments("--headless");
-//        options.setHeadless(true);
+        options.setHeadless(true);
+
         this.driver = new ChromeDriver(options);
         this.js = (JavascriptExecutor) this.getDriver();
     }
