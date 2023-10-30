@@ -3,6 +3,7 @@ package com.coupang.pangpang.selenium.driver;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -18,6 +19,7 @@ public class CustChromeDriver {
     private static final String WEB_DRIVER_PATH = "C:/chromedriver-win32/chromedriver-win32/chromedriver.exe";
 
     private ChromeDriver driver;
+    private JavascriptExecutor js;
 
     public CustChromeDriver() {
         System.setProperty (WEB_DRIVER_ID, WEB_DRIVER_PATH);
@@ -34,6 +36,7 @@ public class CustChromeDriver {
 //        options.addArguments("--headless");
 //        options.setHeadless(true);
         this.driver = new ChromeDriver(options);
+        this.js = (JavascriptExecutor) this.getDriver();
     }
 
 //    @AfterEach // junit 아직 설정 안함
