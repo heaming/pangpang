@@ -20,9 +20,10 @@ public class LoginController {
     private final JsonToExcelService excelService;
 
     @GetMapping("/search")
-    public void search(@RequestParam(name = "param", required = false) String param) {
+    public void search(@RequestParam(name = "param", required = false) String param,
+                       @RequestParam(name = "searchOrder", required = false) String searchOrder) {
         log.info(param);
-        searchService.login(param);
+        searchService.login(param, searchOrder);
     }
 
     @PostMapping("/excel/{fileName}")

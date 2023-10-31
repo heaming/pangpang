@@ -16,27 +16,29 @@ import java.time.Duration;
 @Slf4j
 @RequiredArgsConstructor
 public class CoupangLoginService {
-//    private static final String loginUrl = "https://wing.coupang.com";
-
     private static final String loginUrl = "https://wing.coupang.com/tenants/seller-web/post-matching/page/inventory-list";
-    private static final String searchUrl = "";
     private final ChromeDriverConfig chrome;
     private Wait<WebDriver> wait;
 
-    public void login(String inputValue) {
-        String[] inputArr = inputValue.split(" ");
-
+    public void login(String keyword, String searchOrder) {
         ChromeDriver driver = chrome.getDriver();
         JavascriptExecutor js = chrome.getJs();
-//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(loginUrl);
 
         String title = driver.getTitle();
-        log.info(title);
+        searchOrder = ( searchOrder.isEmpty() || searchOrder.equals("") ) ? "DEFAULT" : searchOrder;
+
+        log.info("title : " + title);
+        log.info("keyword : " + keyword);
+        log.info("searchOrder : " + searchOrder);
 
 
+        /*
+         * 로그인 확인
+         */
+        // TODO - cookie 조회로 받아오기
         if(title.indexOf("Coupang") < 0) {
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"username\"]")));
             WebElement usernameInput = driver.findElement(By.xpath("//*[@id=\"username\"]"));
@@ -51,46 +53,37 @@ public class CoupangLoginService {
             driver.executeScript(
                     "arguments[0].removeAttribute('data-wing-notify-state')", html
             );
-
-//            WebElement inBtn = driver.findElement(By.xpath("//*[@id=\"wing-top-body\"]/div/div[5]/div[1]/div[2]/div/div/div/table/tbody/tr[1]/td[6]/button"));
-//            inBtn.sendKeys(Keys.ENTER);
-
         }
 
-
-
-//        WebElement innerBtn = driver.findElement(By.xpath("//*[@id=\"wing-top-body\"]/div/div[4]/div[2]/div[2]/div[2]/button"));
-//        innerBtn.click();
-
-//        WebElement searchInput = driver.findElement(By.xpath("//*[@id=\"container-wing-v2\"]/div[3]/div/div/div/div[2]/div/div[1]/div[4]/div[1]/div/span/span/input"));
-//        searchInput.clear();
-//        searchInput.sendKeys(inputValue);
-
-// BEST_SELLING // PV
+        // BEST_SELLING // PV
         js.executeScript(
-"fetch('https://wing.coupang.com/tenants/seller-web/post-matching/search', \n" +
-        "      {method: 'POST',\n" +
-        "       headers: {'Content-Type': 'application/json'},\n" +
-        "       body: JSON.stringify({keyword: '"+inputValue+"', excludedProductIds: [], searchPage: 0, searchOrder: 'DEFAULT'}),\n" +
-        "      }\n" +
-        ")\n" +
+            "fetch('https://wing.coupang.com/tenants/seller-web/post-matching/search', \n" +
+            "      { method: 'POST',\n" +
+        "            headers: {'Content-Type': 'application/json'},\n" +
+        "            body: JSON.stringify({ keyword: '"+keyword+"', " +
+                    "                       excludedProductIds: [], " +
+                    "                       searchPage: 0, " +
+                    "                       searchOrder: '"+searchOrder+"'" +
+                    "                   }),\n" +
+        "           }\n" +
+    "       )\n" +
         "    .then(res => res.json())\n" +
-        "    .then(data =>  {console.log(data.result);   \n" +
-        "                    fetch('http://localhost:8090/coupang/excel/"+inputValue+"', {       " +
-            "                           method: 'POST',       " +
-            "                           headers : {                   'Content-Type': 'application/json'},       " +
-            "                           body: JSON.stringify(data.result)" +
-        "                           }" +
+        "    .then(data =>  {   console.log(data.result);   \n" +
+        "                       fetch('http://localhost:8090/coupang/excel/"+keyword+"', " +
+            "                           { method: 'POST',       " +
+            "                             headers : { 'Content-Type': 'application/json' },       " +
+            "                             body: JSON.stringify(data.result)" +
+        "                               }" +
         "                       ).then(res => console.log(res))" +
-        "   }" +
-        ");"
+        "                    }" +
+            ");"
 
 
 //            "var xhr = new XMLHttpRequest();\n" +
 //                    "xhr.open(\"POST\", \"https://wing.coupang.com/tenants/seller-web/post-matching/search\", false);\n" +
 //                    "xhr.setRequestHeader('Content-Type', 'application/json');\n" +
 //                    "xhr.send(JSON.stringify({\n" +
-//                    "    keyword: '"+inputValue+"', excludedProductIds: [], searchPage: 0, searchOrder: 'DEFAULT'\n " +
+//                    "    keyword: '"+keyword+"', excludedProductIds: [], searchPage: 0, searchOrder: 'DEFAULT'\n " +
 //                    "}));\n" +
 //                    "xhr.onload = function() {\n" +
 //                    "  console.log(this.responseText);\n"+
@@ -141,7 +134,7 @@ public class CoupangLoginService {
 //                                    "    \n" +
 //                                    "    let obj;\n" +
 //                                    "    obj = document.createElement('input');\n" +
-//                                    "    obj.setAttribute('keyword', '"+inputValue+"');\n" +
+//                                    "    obj.setAttribute('keyword', '"+keyword+"');\n" +
 //                                    "    obj.setAttribute('excludedProductIds', []);\n" +
 //                                    "    obj.setAttribute('searchPage', 0);\n" +
 //                                    "    obj.setAttribute('searchOrder', 'DEFAULT');\n" +

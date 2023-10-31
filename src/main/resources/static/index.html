@@ -6,6 +6,12 @@
 </head>
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
 <body>
+<!--// BEST_SELLING // PV-->
+    <select id="select-input">
+        <option value="PV">조회순</option>
+        <option value="BEST_SELLING">판매순</option>
+        <option value="DEFAULT">쿠팡랭킹순</option>
+    </select>
   <input id="search-input"/>
   <button value="button" class="btn">👀👀👀</button>
 </body>
@@ -16,7 +22,7 @@
         // onClick
         $('.btn').click(function() {
             $.ajax({
-                url: url+$('#search-input').val(),
+                url: url+$('#search-input').val()+"&searchOrder="+$('#select-input').val(),
                 type: "GET",
                 success: function(result) {
                     console.log(result);
@@ -31,7 +37,7 @@
         $('#search-input').on('keyup', function (key) {
             if(key.keyCode == 13) {
                 $.ajax({
-                    url: url+$('#search-input').val(),
+                    url: url+$('#search-input').val()+"&searchOrder="+$('#select-input').val(),
                     type: "GET",
                     success: function(result) {
                         console.log("res :: \n"+result);
