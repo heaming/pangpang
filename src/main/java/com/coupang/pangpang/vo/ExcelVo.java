@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
 public class ExcelVo {
     private String DEFUALT_PATH;
     private String DEFUALT_NAME;
-    private XSSFWorkbook wb;
+    private XSSFWorkbook workbook;
     private XSSFSheet sheet;
+    private String fileName;
 
     public ExcelVo(
             @Value("${excel.default_file_path}") String path,
@@ -23,9 +24,14 @@ public class ExcelVo {
 
         this.DEFUALT_PATH = path;
         this.DEFUALT_NAME = prefix + sufix;
-        this.wb = new XSSFWorkbook();
-        this.sheet = wb.createSheet();
-        }
+        this.workbook = new XSSFWorkbook();
+        this.sheet = workbook.createSheet("sheet1");
+        this.fileName = this.DEFUALT_NAME;
 
+    }
+
+    public String getFileName() {
+        return this.fileName.length() > 0 ? this.fileName+".xls" : this.DEFUALT_NAME;
+    }
 
 }

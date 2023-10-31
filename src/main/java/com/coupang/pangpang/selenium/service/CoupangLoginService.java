@@ -8,6 +8,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
@@ -31,17 +32,18 @@ public class CoupangLoginService {
         ChromeDriver driver = chrome.getDriver();
         JavascriptExecutor js = chrome.getJs();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(loginUrl);
 
         String title = driver.getTitle();
         log.info(title);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"username\"]")));
 
         if(title.indexOf("Coupang") < 0) {
-            WebElement usernameInput = driver.findElement(By.id("username"));
-            WebElement passwordInput = driver.findElement(By.id("password"));
-            WebElement loginBtn = driver.findElement(By.id("kc-search"));
+            WebElement usernameInput = driver.findElement(By.xpath("//*[@id=\"username\"]"));
+            WebElement passwordInput = driver.findElement(By.xpath("//*[@id=\"password\"]"));
+            WebElement loginBtn = driver.findElement(By.xpath("//*[@id=\"kc-login\"]"));
             usernameInput.clear();
             usernameInput.sendKeys("configenv");
             passwordInput.clear();
@@ -66,7 +68,7 @@ public class CoupangLoginService {
 //        searchInput.clear();
 //        searchInput.sendKeys(inputValue);
 
-
+// BEST_SELLING // PV
         js.executeScript(
 "fetch('https://wing.coupang.com/tenants/seller-web/post-matching/search', \n" +
         "      {method: 'POST',\n" +
@@ -76,7 +78,7 @@ public class CoupangLoginService {
         ")\n" +
         "    .then(res => res.json())\n" +
         "    .then(data =>  {console.log(data.result);   \n" +
-        "                    fetch('http://localhost:8090/coupang/excel', {       " +
+        "                    fetch('http://localhost:8090/coupang/excel/"+inputValue+"', {       " +
             "                           method: 'POST',       " +
             "                           headers : {                   'Content-Type': 'application/json'},       " +
             "                           body: JSON.stringify(data.result)" +

@@ -4,20 +4,38 @@ import com.coupang.pangpang.vo.ExcelVo;
 import com.coupang.pangpang.vo.ProductVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ooxml.POIXMLDocumentPart;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class JsonToExcelService {
+public class JsonToExcelService  {
 
+    @Autowired
     private ExcelVo excel;
 
-    public void downloadExcel(List<ProductVo> datas) {
+    public void downloadExcel(List<ProductVo> datas, String searchValue) throws IOException {
+//        excel = new ExcelVo();
+        XSSFWorkbook wb = excel.getWorkbook();
+        XSSFSheet sheet = excel.getSheet();
+
+
+        if (searchValue.length() > 0 ) {
+            this.excel.setFileName(searchValue);
+        }
 
         Map<Integer, Object[]> map = new TreeMap<>();
         String[] headers = new String[]{
@@ -70,12 +88,28 @@ public class JsonToExcelService {
             map.put(i+1, dataSet);
         }
 
-        for(String )
+        Set<Integer> keyset = map.keySet();
 
+        for(Integer key : keyset) {
+            Row row = sheet.createRow(key);
+            Object[] cellArr = map.get(key);
+            int cellNum = 0;
 
+            for(Object obj : cellArr) {
+                Cell cell = row.createCell(cellNum++);
 
+                if(obj instanceof String) {
+                    cell.setCellValue((String) obj);
+                } else if (obj instanceof Long) {
+                    cell.setCellValue((Long) obj);
+                } else if (obj instanceof Integer) {
+                    cell.setCellValue((Integer) obj);
+                } else if (obj instanceof Double) {
+                    cell.setCellValue((Double) obj);
+                }
+            }
+        }
+
+        wb.write(new FileOutputStream(new File(excel.getDEFUALT_PATH(), excel.getFileName())));
     }
-
-
-
 }

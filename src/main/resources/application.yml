@@ -25,5 +25,5 @@ webdriver:
 
 excel:
   default_file_path: C:/test
-  name_prefix: pangpang_
-  name_sufix: .xlsx
+  name_prefix: pangpang
+  name_sufix: .xls
