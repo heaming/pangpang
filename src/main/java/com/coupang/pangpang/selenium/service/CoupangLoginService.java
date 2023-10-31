@@ -3,10 +3,7 @@ package com.coupang.pangpang.selenium.service;
 import com.coupang.pangpang.selenium.config.ChromeDriverConfig;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
@@ -31,16 +28,17 @@ public class CoupangLoginService {
 
         ChromeDriver driver = chrome.getDriver();
         JavascriptExecutor js = chrome.getJs();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+//        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         driver.get(loginUrl);
 
         String title = driver.getTitle();
         log.info(title);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"username\"]")));
+
 
         if(title.indexOf("Coupang") < 0) {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"username\"]")));
             WebElement usernameInput = driver.findElement(By.xpath("//*[@id=\"username\"]"));
             WebElement passwordInput = driver.findElement(By.xpath("//*[@id=\"password\"]"));
             WebElement loginBtn = driver.findElement(By.xpath("//*[@id=\"kc-login\"]"));
@@ -48,14 +46,14 @@ public class CoupangLoginService {
             usernameInput.sendKeys("configenv");
             passwordInput.clear();
             passwordInput.sendKeys("!187f5391bf3d");
-            loginBtn.click();
+            loginBtn.sendKeys(Keys.ENTER);
             WebElement html = driver.findElement(By.xpath("/html"));
             driver.executeScript(
                     "arguments[0].removeAttribute('data-wing-notify-state')", html
             );
 
-            WebElement inBtn = driver.findElement(By.xpath("//*[@id=\"wing-top-body\"]/div/div[5]/div[1]/div[2]/div/div/div/table/tbody/tr[1]/td[6]/button"));
-            inBtn.click();
+//            WebElement inBtn = driver.findElement(By.xpath("//*[@id=\"wing-top-body\"]/div/div[5]/div[1]/div[2]/div/div/div/table/tbody/tr[1]/td[6]/button"));
+//            inBtn.sendKeys(Keys.ENTER);
 
         }
 
