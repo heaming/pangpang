@@ -4,16 +4,17 @@ import com.coupang.pangpang.vo.ExcelVo;
 import com.coupang.pangpang.vo.ProductVo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ooxml.POIXMLDocumentPart;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFHyperlink;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -57,14 +58,15 @@ public class JsonToExcelService  {
                 "ratingCount",
                 "salePrice",
                 "sponsored",
-                "venderId"
+                "venderId",
+                "productUrl"
         };
         map.put(0, headers);
 
         for(int i = 0; i < datas.size(); i++) {
             ProductVo data = datas.get(i);
 
-            Object[] dataSet = new Object[19];
+            Object[] dataSet = new Object[20];
             dataSet[0] = data.getAttributeTypes();
             dataSet[1] = data.getBrandName();
             dataSet[2] = data.getCategoryId();
@@ -84,11 +86,19 @@ public class JsonToExcelService  {
             dataSet[16] = data.getSalePrice();
             dataSet[17] = data.getSponsored();
             dataSet[18] = data.getVenderId();
+            dataSet[19] = "https://www.coupang.com/vp/products/"+data.getProductId()+"?isAddedCart=";
 
             map.put(i+1, dataSet);
         }
 
         Set<Integer> keyset = map.keySet();
+        CellStyle hyperLinkStyle = wb.createCellStyle();
+        Font hyperLinkFont = wb.createFont();
+        hyperLinkFont.setUnderline(Font.U_SINGLE);
+        hyperLinkFont.setColor(IndexedColors.BLUE.getIndex());
+        hyperLinkStyle.setFont(hyperLinkFont);
+        CreationHelper creationHelper = wb.getCreationHelper();
+        Hyperlink hyperlink = creationHelper.createHyperlink(HyperlinkType.URL);
 
         for(Integer key : keyset) {
             Row row = sheet.createRow(key);
@@ -99,13 +109,23 @@ public class JsonToExcelService  {
                 Cell cell = row.createCell(cellNum++);
 
                 if(obj instanceof String) {
-                    cell.setCellValue((String) obj);
+                   if( ((String) obj).contains("https://www.coupang.com/vp/products/") ) {
+                       hyperlink.setAddress((String) obj);
+                       cell.setCellValue((String) obj);
+                       cell.setHyperlink(hyperlink);
+                       cell.setCellStyle(hyperLinkStyle);
+                   } else {
+                       cell.setCellValue((String) obj);
+                   }
+
+
+
                 } else if (obj instanceof Long) {
-                    cell.setCellValue((Long) obj);
+                    cell.setCellValue((String)String.valueOf((Long) obj));
                 } else if (obj instanceof Integer) {
-                    cell.setCellValue((Integer) obj);
+                    cell.setCellValue((String)String.valueOf((Integer) obj));
                 } else if (obj instanceof Double) {
-                    cell.setCellValue((Double) obj);
+                    cell.setCellValue((String)String.valueOf((Double) obj));
                 }
             }
         }
