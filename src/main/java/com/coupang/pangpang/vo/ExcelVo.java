@@ -40,6 +40,10 @@ public class ExcelVo {
     }
 
     public String getFileName() {
+        Timestamp timestamp  = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss") ;
+
+        this.currentTime = format.format(timestamp);
         return this.fileName.length() > 0 ? this.fileName+"_"+this.currentTime+".xls" : this.DEFUALT_NAME;
     }
 

@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -28,7 +25,7 @@ public class JsonToExcelService  {
     @Autowired
     private ExcelVo excel;
 
-    public void downloadExcel(List<ProductVo> datas, String searchValue) throws IOException {
+    public void downloadExcel(List<ProductVo> datas, String searchValue, String searchOrder) throws IOException {
 //        excel = new ExcelVo();
         XSSFWorkbook wb = excel.getWorkbook();
         XSSFSheet sheet = excel.getSheet();
@@ -62,6 +59,13 @@ public class JsonToExcelService  {
                 "productUrl"
         };
         map.put(0, headers);
+
+        if(searchOrder.equals("PV")) {
+            Collections.sort(datas, (o1, o2) -> Integer.valueOf(o2.getPvLast28Day()) - Integer.valueOf(o1.getPvLast28Day()));
+        }
+//        else if (searchOrder.equals("BEST_SELLING")) {
+//            Collections.sort(datas, (o1, o2) -> Integer.valueOf(o2.getPvLast28Day()) - Integer.valueOf(o1.getPvLast28Day()));
+//        }
 
         for(int i = 0; i < datas.size(); i++) {
             ProductVo data = datas.get(i);

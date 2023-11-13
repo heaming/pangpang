@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 @Controller
@@ -26,12 +27,15 @@ public class LoginController {
         searchService.login(param, searchOrder);
     }
 
-    @PostMapping("/excel/{fileName}")
-    public @ResponseBody List<ProductVo> excel(@RequestBody List<ProductVo> vo, @PathVariable String fileName) throws IOException {
+    @PostMapping("/excel/{fileName}/{searchOrder}")
+    public @ResponseBody List<ProductVo> excel(@RequestBody List<ProductVo> vo,
+                                               @PathVariable String fileName,
+                                               @PathVariable String searchOrder) throws IOException {
         log.info(vo.get(0).toString());
 
         fileName = (fileName == null || fileName.length() == 0) ? "" : fileName;
-        excelService.downloadExcel(vo, fileName);
+        searchOrder = (searchOrder == null || searchOrder.length() == 0) ?  "DEFAULT" : searchOrder;
+        excelService.downloadExcel(vo, fileName, searchOrder);
         return vo;
     }
 

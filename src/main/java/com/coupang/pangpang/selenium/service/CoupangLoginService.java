@@ -69,7 +69,7 @@ public class CoupangLoginService {
     "       )\n" +
         "    .then(res => res.json())\n" +
         "    .then(data =>  {   console.log(data.result);   \n" +
-        "                       fetch('http://localhost:8090/coupang/excel/"+keyword+"', " +
+        "                       fetch('http://localhost:8090/coupang/excel/"+keyword+"/"+searchOrder+"', " +
             "                           { method: 'POST',       " +
             "                             headers : { 'Content-Type': 'application/json' },       " +
             "                             body: JSON.stringify(data.result)" +
